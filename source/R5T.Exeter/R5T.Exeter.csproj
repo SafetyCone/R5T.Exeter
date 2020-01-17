@@ -5,8 +5,8 @@
     <NoWarn>1701;1702;1591;1573</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\R5T.Chamavia\source\R5T.Chamavia\R5T.Chamavia.csproj" />
+    <ProjectReference Include="..\..\..\R5T.Chamavia.Extensions\source\R5T.Chamavia.Extensions\R5T.Chamavia.Extensions.csproj" />
     <ProjectReference Include="..\..\..\R5T.Dacia.Extensions\source\R5T.Dacia.Extensions\R5T.Dacia.Extensions.csproj" />
-    <ProjectReference Include="..\..\..\R5T.Langobard\source\R5T.Langobard\R5T.Langobard.csproj" />
+    <ProjectReference Include="..\..\..\R5T.Langobard.Extensions\source\R5T.Langobard.Extensions\R5T.Langobard.Extensions.csproj" />
   </ItemGroup>
 </Project>
