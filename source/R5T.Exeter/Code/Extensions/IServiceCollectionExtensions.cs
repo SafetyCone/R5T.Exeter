@@ -3,6 +3,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using R5T.Langobard;
+
 
 namespace R5T.Exeter
 {
@@ -14,6 +16,16 @@ namespace R5T.Exeter
         public static IServiceCollection AddConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<IConfiguration>(configuration);
+
+            return services;
+        }
+
+        public static IServiceCollection AddBasicLogging(this IServiceCollection services)
+        {
+            services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.AddBasicLogging();
+            });
 
             return services;
         }
