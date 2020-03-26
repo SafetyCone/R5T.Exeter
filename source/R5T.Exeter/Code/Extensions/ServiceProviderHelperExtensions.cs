@@ -41,7 +41,7 @@ namespace R5T.Exeter
         /// <summary>
         /// Gets an instance using an empty configuration and logging provided by <see cref="LoggingBuilderHelper.AddDefaultLogging(ILoggingBuilder)"/>.
         /// </summary>
-        public static T GetInstanceWithEmptyConfigurationAndDefaultLogging<T>(this ServiceProviderHelper serviceProviderHelper)
+        public static T GetInstanceWithEmptyConfigurationAndDefaultLogging<T>(this ServiceProviderHelper serviceProviderHelper, Action<IServiceCollection> configureServicesAction)
             where T: class
         {
             var emptyConfiguration = ConfigurationHelper.GetEmptyConfiguration();
@@ -49,21 +49,22 @@ namespace R5T.Exeter
             var instance = serviceProviderHelper.GetInstance<T>(
                 emptyConfiguration,
                 LoggingBuilderHelper.AddDefaultLogging,
-                (services) =>
-                {
-                    services.AddSingleton<T>();
-                });
+                configureServicesAction);
 
             return instance;
         }
 
         /// <summary>
-        /// Uses the <see cref="GetInstanceWithEmptyConfigurationAndDefaultLogging{T}(ServiceProviderHelper)"/> method.
+        /// Uses the <see cref="GetInstanceWithEmptyConfigurationAndDefaultLogging{T}(ServiceProviderHelper, Action{IServiceCollection})"/> method.
+        /// Note: adds the <typeparamref name="T"/> as a <see cref="ServiceLifetime.Singleton"/>.
         /// </summary>
         public static T GetInstance<T>(this ServiceProviderHelper serviceProviderHelper)
             where T: class
         {
-            var instance = serviceProviderHelper.GetInstanceWithEmptyConfigurationAndDefaultLogging<T>();
+            var instance = serviceProviderHelper.GetInstanceWithEmptyConfigurationAndDefaultLogging<T>(services =>
+            {
+                services.AddSingleton<T>();
+            });
             return instance;
         }
     }
