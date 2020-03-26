@@ -26,20 +26,45 @@ namespace R5T.Exeter
             return serviceProvider;
         }
 
-        public static T GetInstance<T>(this ServiceProviderHelper serviceProviderHelper)
+        public static T GetInstance<T>(this ServiceProviderHelper serviceProviderHelper, IConfiguration configuration, Action<ILoggingBuilder> configureLoggingAction, Action<IServiceCollection> configureServicesAction)
+            where T: class
+        {
+            var startupServiceProvider = serviceProviderHelper.GetServiceProvider(
+                configuration,
+                configureLoggingAction,
+                configureServicesAction);
+
+            var instance = startupServiceProvider.GetRequiredService<T>();
+            return instance;
+        }
+
+        /// <summary>
+        /// Gets an instance using an empty configuration and logging provided by <see cref="LoggingBuilderHelper.AddDefaultLogging(ILoggingBuilder)"/>.
+        /// </summary>
+        public static T GetInstanceWithEmptyConfigurationAndDefaultLogging<T>(this ServiceProviderHelper serviceProviderHelper)
             where T: class
         {
             var emptyConfiguration = ConfigurationHelper.GetEmptyConfiguration();
 
-            var startupServiceProvider = ServiceProviderHelper.New()
-                .GetServiceProvider(emptyConfiguration, LoggingBuilderHelper.AddDefaultLogging,
-                    (services) =>
-                    {
-                        services.AddSingleton<T>();
-                    });
+            var instance = serviceProviderHelper.GetInstance<T>(
+                emptyConfiguration,
+                LoggingBuilderHelper.AddDefaultLogging,
+                (services) =>
+                {
+                    services.AddSingleton<T>();
+                });
 
-            var applicationStartup = startupServiceProvider.GetRequiredService<T>();
-            return applicationStartup;
+            return instance;
+        }
+
+        /// <summary>
+        /// Uses the <see cref="GetInstanceWithEmptyConfigurationAndDefaultLogging{T}(ServiceProviderHelper)"/> method.
+        /// </summary>
+        public static T GetInstance<T>(this ServiceProviderHelper serviceProviderHelper)
+            where T: class
+        {
+            var instance = serviceProviderHelper.GetInstanceWithEmptyConfigurationAndDefaultLogging<T>();
+            return instance;
         }
     }
 }
